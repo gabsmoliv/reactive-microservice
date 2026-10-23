@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.taskmanagement</groupId>
+        <artifactId>task-management</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>karate-tests</artifactId>
+    <name>karate-tests</name>
+    <description>End-to-end API tests (Karate) against the running system</description>
+
+    <properties>
+        <!-- Karate tests need the full system running; skipped unless -Pintegration is active. -->
+        <karate.skip>true</karate.skip>
+        <auth.url>http://localhost:8084</auth.url>
+        <task.url>http://localhost:8083</task.url>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.intuit.karate</groupId>
+            <artifactId>karate-junit5</artifactId>
+            <version>${karate.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>${karate.skip}</skipTests>
+                    <systemPropertyVariables>
+                        <auth.url>${auth.url}</auth.url>
+                        <task.url>${task.url}</task.url>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>integration</id>
+            <properties>
+                <karate.skip>false</karate.skip>
+            </properties>
+        </profile>
+    </profiles>
+</project>

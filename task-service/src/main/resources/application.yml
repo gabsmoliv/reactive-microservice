@@ -1,0 +1,32 @@
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  application:
+    name: task-service
+  r2dbc:
+    url: ${TASK_DB_URL:r2dbc:postgresql://localhost:5432/task_db}
+    username: ${TASK_DB_USER:task_user}
+    password: ${TASK_DB_PASSWORD:task_pass}
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+app:
+  jwt:
+    issuer: ${JWT_ISSUER:http://auth-service}
+    jwks-uri: ${AUTH_JWKS_URI:http://localhost:8081/.well-known/jwks.json}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
